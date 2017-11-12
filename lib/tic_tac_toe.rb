@@ -1,3 +1,5 @@
+require 'pry'
+
 WIN_COMBINATIONS = [
   [0,1,2],
   [3,4,5],
@@ -32,27 +34,12 @@ def over?(board)
 end
 
 def winner(board)
-  board[won?(board)[0]] if over?(board) && !draw?(board)
-end
-
-def turn_count(board)
-  counter = 0
-  board.each do |slot|
-    slot = slot.upcase
-    counter += 1 if slot == "X" or slot == "O"
-  end
-  counter
+  # binding.pry
+  board[won?(board)[0]] if !!over?(board) && !draw?(board)
 end
 
 def current_player(board)
-  counter = 0
-  board.each do |slot|
-    slot = slot.upcase
-    if slot != " "
-      counter += 1
-    end
-  end
-  if counter % 2 == 1
+  if turn_count(board) % 2 == 1
     "O"
   else
     "X"
@@ -71,7 +58,7 @@ def input_to_index(user_input)
   user_input.to_i - 1
 end
 
-def move(board, index, current_player = "X")
+def move(board, index, current_player)
   board[index] = current_player
 end
 
@@ -86,33 +73,36 @@ end
 def result(board)
   if draw?(board)
     puts "Cat's Game!"
-    exit
   else
     puts "Congratulations #{winner(board)}!"
-    exit
   end
 end
 
 def turn(board)
   puts "Select a number between 1-9"
-  display_board(board)
-
   input = gets.chomp
   index = input_to_index(input)
+  current_player = current_player(board)
 
   if valid_move?(board, index)
-    move(board, index)
+    move(board, index, current_player)
+    return display_board(board)
   else
     puts "INVALID INPUT"
-    turn(board)
   end
 end
 
+def turn_count(board)
+  board.select {|slot| slot != " "}.count
+end
+
 def play(board)
-  turn(board)
-  # unless over?(board)
-  #   turn(board)
-  # else
-  #   result(board)
-  # end
+  display_board(board)
+  while turn_count(board) < 9
+    turn(board)
+    if over?(board)
+      return result(board)
+    end
+  end
+
 end
