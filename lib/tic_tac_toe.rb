@@ -30,12 +30,11 @@ def draw?(board)
 end
 
 def over?(board)
-  draw?(board) || won?(board)
+  !!draw?(board) || !!won?(board)
 end
 
 def winner(board)
-  # binding.pry
-  board[won?(board)[0]] if !!over?(board) && !draw?(board)
+  board[won?(board)[0]] if !!won?(board)
 end
 
 def current_player(board)
@@ -71,7 +70,7 @@ def valid_move?(board, index)
 end
 
 def result(board)
-  if draw?(board)
+  if !!draw?(board)
     puts "Cat's Game!"
   else
     puts "Congratulations #{winner(board)}!"
@@ -80,15 +79,17 @@ end
 
 def turn(board)
   puts "Select a number between 1-9"
+  display_board(board)
+  
   input = gets.chomp
   index = input_to_index(input)
   current_player = current_player(board)
 
   if valid_move?(board, index)
     move(board, index, current_player)
-    return display_board(board)
   else
     puts "INVALID INPUT"
+    turn(board)
   end
 end
 
@@ -97,10 +98,10 @@ def turn_count(board)
 end
 
 def play(board)
-  display_board(board)
-  while turn_count(board) < 9
-    turn(board)
-    if over?(board)
+  while turn_count(board) < 10
+    if !over?(board)
+      turn(board)
+    else
       return result(board)
     end
   end

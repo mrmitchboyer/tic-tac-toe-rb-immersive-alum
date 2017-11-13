@@ -1,6 +1,7 @@
+require 'pry'
 require_relative '../lib/tic_tac_toe.rb'
 
-describe './lib/tic_tac_toe.rb' do  
+describe './lib/tic_tac_toe.rb' do
   describe '#play' do
     it 'asks for players input on a turn of the game' do
       board = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
@@ -109,7 +110,7 @@ describe './lib/tic_tac_toe.rb' do
     it 'prints "Cat\'s Game!" on a draw' do
       board = ["X", "O", "X", "O", "X", "X", "O", "X", "O"]
       allow($stdout).to receive(:puts)
-
+      # binding.pry
       expect($stdout).to receive(:puts).with("Cat's Game!")
 
       play(board)
